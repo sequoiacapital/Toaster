@@ -77,6 +77,20 @@ open class ToastView: UIView {
   /// Default value: false
   @objc open dynamic var useSafeAreaForBottomOffset: Bool = false
 
+  /// if this value is `true`, the toast would be showing from top of the screem
+  @objc open dynamic var fromTop: Bool = false
+
+  /// The top offset from the screen's bottom in portrait mode.
+  @objc open dynamic var topOffsetPortrait: CGFloat = 0
+
+  /// The top offset from the screen's bottom in landscape mode.
+  @objc open dynamic var topOffsetLandscape: CGFloat = 0
+
+  /// If this value is `true` and SafeArea is available,
+  /// `safeAreaInsets.top` will be added to the `topOffsetPortrait` and `topOffsetLandscape`.
+  /// Default value: true
+  @objc open dynamic var useSafeAreaForTopOffset: Bool = true
+
   /// The width ratio of toast view in window, specified as a value from 0.0 to 1.0.
   /// Default value: 0.875
   @objc open dynamic var maxWidthRatio: CGFloat = (280.0 / 320.0)
@@ -186,28 +200,53 @@ open class ToastView: UIView {
     var height: CGFloat
 
     let orientation = UIApplication.shared.statusBarOrientation
-    if orientation.isPortrait || !ToastWindow.shared.shouldRotateManually {
-      width = containerSize.width
-      height = containerSize.height
-      y = self.bottomOffsetPortrait
-    } else {
-      width = containerSize.height
-      height = containerSize.width
-      y = self.bottomOffsetLandscape
-    }
-    if #available(iOS 11.0, *), useSafeAreaForBottomOffset {
-      y += ToastWindow.shared.safeAreaInsets.bottom
-    }
 
-    let backgroundViewSize = self.backgroundView.frame.size
-    x = (width - backgroundViewSize.width) * 0.5
-    y = height - (backgroundViewSize.height + y)
-    self.frame = CGRect(
-      x: x,
-      y: y,
-      width: backgroundViewSize.width,
-      height: backgroundViewSize.height
-    )
+    if fromTop {
+      if orientation.isPortrait || !ToastWindow.shared.shouldRotateManually {
+        width = containerSize.width
+        height = containerSize.height
+        y = self.topOffsetPortrait
+      } else {
+        width = containerSize.height
+        height = containerSize.width
+        y = self.topOffsetLandscape
+      }
+      if #available(iOS 11.0, *), useSafeAreaForTopOffset {
+        y += ToastWindow.shared.safeAreaInsets.top
+      }
+
+      let backgroundViewSize = self.backgroundView.frame.size
+      x = (width - backgroundViewSize.width) * 0.5
+      self.frame = CGRect(
+        x: x,
+        y: y,
+        width: backgroundViewSize.width,
+        height: backgroundViewSize.height
+      )
+    } else {
+      if orientation.isPortrait || !ToastWindow.shared.shouldRotateManually {
+        width = containerSize.width
+        height = containerSize.height
+        y = self.bottomOffsetPortrait
+      } else {
+        width = containerSize.height
+        height = containerSize.width
+        y = self.bottomOffsetLandscape
+      }
+      if #available(iOS 11.0, *), useSafeAreaForBottomOffset {
+        y += ToastWindow.shared.safeAreaInsets.bottom
+      }
+
+      let backgroundViewSize = self.backgroundView.frame.size
+      x = (width - backgroundViewSize.width) * 0.5
+      y = height - (backgroundViewSize.height + y)
+      self.frame = CGRect(
+        x: x,
+        y: y,
+        width: backgroundViewSize.width,
+        height: backgroundViewSize.height
+      )
+    }
   }
 
   override open func hitTest(_ point: CGPoint, with event: UIEvent!) -> UIView? {

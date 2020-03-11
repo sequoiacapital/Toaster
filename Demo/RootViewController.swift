@@ -51,6 +51,9 @@ final class RootViewController: UIViewController {
     appearance.textInsets = UIEdgeInsets(top: 15, left: 20, bottom: 15, right: 20)
     appearance.bottomOffsetPortrait = 100
     appearance.cornerRadius = 20
+    appearance.fromTop = true
+    appearance.topOffsetPortrait = 20
+    appearance.useSafeAreaForTopOffset = true
     appearance.maxWidthRatio = 0.7
   }
 
