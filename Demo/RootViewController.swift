@@ -68,6 +68,10 @@ final class RootViewController: UIViewController {
       "`Delay.long` means 3.5 seconds.",
           duration: Delay.long).show()
     Toast(text: "With delay, Toaster will be shown after delay.", delay: 1, duration: 5).show()
+    Toast(text: "With tapToDimiss=false", tapToDismiss: false).show()
+    Toast(text: "With tap, with handler to a tab on toast") {
+      print( "Toast tapped")
+    }.show()
   }
 
   @objc dynamic func keyboardButtonTouchUpInside(sender: RespondingButton) {

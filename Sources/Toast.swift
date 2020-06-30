@@ -59,21 +59,42 @@ open class Toast: Operation {
 
   /// Initializer.
   /// Instantiates `self.view`, so must be called on main thread.
-  @objc public init(text: String?, delay: TimeInterval = 0, duration: TimeInterval = Delay.short) {
+  @objc public init(text: String?,
+                    delay: TimeInterval = 0,
+                    duration: TimeInterval = Delay.short,
+                    tapToDismiss: Bool = true,
+                    onTap: (() -> ())? = nil) {
     self.delay = delay
     self.duration = duration
     super.init()
     self.text = text
+    self.view.onTap = { [weak self] in
+      guard let self = self else { return }
+      if tapToDismiss {
+        self.cancel()
+      }
+      onTap?()
+    }
   }
 
-  @objc public init(attributedText: NSAttributedString?, delay: TimeInterval = 0, duration: TimeInterval = Delay.short) {
+  @objc public init(attributedText: NSAttributedString?,
+                    delay: TimeInterval = 0,
+                    duration: TimeInterval = Delay.short,
+                    tapToDismiss: Bool = true,
+                    onTap: (() -> ())? = nil) {
     self.delay = delay
     self.duration = duration
     super.init()
     self.attributedText = attributedText
+    self.view.onTap = { [weak self] in
+      guard let self = self else { return }
+      if tapToDismiss {
+        self.cancel()
+      }
+      onTap?()
+    }
   }
   
-
   // MARK: Factory (Deprecated)
 
   @available(*, deprecated, message: "Use 'init(text:)' instead.")

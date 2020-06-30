@@ -77,8 +77,7 @@ open class ToastWindow: UIWindow {
   public init(frame: CGRect, mainWindow: UIWindow?) {
     super.init(frame: frame)
     self.mainWindow = mainWindow
-    self.isUserInteractionEnabled = false
-    self.gestureRecognizers = nil
+    //self.gestureRecognizers = nil
     #if swift(>=4.2)
     self.windowLevel = .init(rawValue: .greatestFiniteMagnitude)
     let willChangeStatusBarOrientationName = UIApplication.willChangeStatusBarOrientationNotification
@@ -223,5 +222,14 @@ open class ToastWindow: UIWindow {
     }
     return nil
   }
-  
+ 
+  override open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    var hit: UIView? = nil
+    self.subviews.forEach { view in
+      if view.frame.contains(point), view.isUserInteractionEnabled {
+        hit = view
+      }
+    }
+    return hit
+  }
 }

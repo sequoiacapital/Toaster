@@ -158,18 +158,31 @@ open class ToastView: UIView {
 
 
   // MARK: Initializing
+  var onTap: (() -> ())? {
+    didSet {
+      self.isUserInteractionEnabled = self.onTap != nil
+    }
+  }
 
+  private let tapRecognizer = UITapGestureRecognizer()
   public init() {
     super.init(frame: .zero)
-    self.isUserInteractionEnabled = false
+    self.isUserInteractionEnabled = true
     self.addSubview(self.backgroundView)
     self.addSubview(self.textLabel)
+    tapRecognizer.addTarget(self, action: #selector(didTap))
+    tapRecognizer.delegate = self
+    addGestureRecognizer(self.tapRecognizer)
   }
 
   required convenience public init?(coder aDecoder: NSCoder) {
     self.init()
   }
 
+  @objc
+  func didTap() {
+    self.onTap?()
+  }
 
   // MARK: Layout
 
@@ -260,4 +273,7 @@ open class ToastView: UIView {
     return nil
   }
 
+}
+
+extension ToastView: UIGestureRecognizerDelegate {
 }
